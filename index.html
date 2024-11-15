@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kemo Guess Game</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 50px;
+      }
+      #game-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+      }
+      #message {
+        margin: 20px 0;
+        font-size: 1.2em;
+      }
+      input[type="number"] {
+        padding: 10px;
+        margin: 10px 0;
+        width: 80%;
+        max-width: 100px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <h1>Kemo Guess Game</h1>
+      <p>
+        Guess a number between <span id="min-num">1</span> and
+        <span id="max-num">10</span>
+      </p>
+      <input type="number" id="guess-input" placeholder="Enter your guess" />
+      <button id="guess-button">Guess</button>
+      <div id="message"></div>
+      <p id="remaining-tries">You have 3 tries remaining.</p>
+    </div>
+
+    <button id="reset-game" onclick="resetGame()">Rest Game</button>
+
+    <h2 id="winLose"></h2>
+
+    <script>
+      const minNum = 1;
+      const maxNum = 10;
+      const answer = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+
+      let attempts = 0;
+      let running = 3;
+      let won = false;
+
+      const guessInput = document.getElementById("guess-input");
+      const guessButton = document.getElementById("guess-button");
+      const messageDiv = document.getElementById("message");
+      const remainingTries = document.getElementById("remaining-tries");
+      const winLose = document.getElementById("winLose");
+
+      guessButton.addEventListener("click", function () {
+        const guess = Number(guessInput.value);
+        if (isNaN(guess)) {
+          messageDiv.textContent = "Please enter a valid number.";
+        } else if (guess < minNum || guess > maxNum) {
+          messageDiv.textContent = `Please enter a number between ${minNum} and ${maxNum}.`;
+        } else {
+          attempts++;
+          if (guess < answer) {
+            running--;
+            messageDiv.textContent = `Too low! Try again.`;
+          } else if (guess > answer) {
+            running--;
+            messageDiv.textContent = `Too high! Try again.`;
+          } else {
+            messageDiv.textContent = `You guessed it! Congratulations, you are a hero!`;
+            winLose.textContent = `Congratulations, You Won Me!!`;
+            won = true;
+            guessInput.disabled = true;
+            guessButton.disabled = true;
+          }
+          remainingTries.textContent = `You have ${running} tries remaining.`;
+        }
+
+        if (!won && running === 0) {
+          messageDiv.textContent = `You lost! The number was ${answer}.`;
+          winLose.textContent = `No One Can Beat Me In This Game`;
+          guessInput.disabled = true;
+          guessButton.disabled = true;
+        }
+      });
+
+      function resetGame() {
+        location.reload();
+      }
+    </script>
+  </body>
+</html>
